@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title> First PixiJS interaction</title>
+        <script src="https://pixijs.download/release/pixi.js"></script>
+    </head>
+    <body>
+        <script>
+            //Creating the application and putting it into the dom
+            let app = new PIXI.Application({ width: 640, height: 360});
+            document.body.appendChild(app.view);
+            // Magically load the PNG asynchronously and staging it
+            let sprite = PIXI.Sprite.from('sample.png');
+            app.stage.addChild(sprite);
+            //ADDING ANIMATION
+            // Variable for counting seconds
+            let elapsed = 0.0;
+            // tells the app´s ticker to run a callback on every frame
+            app.ticker.add((delta) => {
+                // adding the time to our total time
+                elapsed += delta;
+                // update the sprite´s X position based on the cosine of our elapsed time
+                // dividing by 50 to slow the animation
+                sprite.x = 100.00 + Math.cos(elapsed/50.0) * 100.0;
+            });
+            
+        </script>
+    </body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title> Dodgy-Balls</title>
+        <script src="https://pixijs.download/release/pixi.js"></script>
+    </head>
+    <body>
+        <script>
+            // linkhttps://medium.com/swlh/a-game-any-web-dev-can-build-in-10-mins-using-pixijs-47f8bcd85700
+            // CREATING GAME LOOP AND STARTING THE APPLICATION
+            function gameLoop(){
+                palyer.update();
+                coin.update();
+                evilBalls.forEach(c => {
+                    c.update();
+                })
+            }
+
+            let w = 512, h = 512;
+            let app = new PIXI.Application({width:w,height:h,antialias:true});
+            let evilBalls = [];
+            let pressed = {};
+            let player;
+            let coin;
+            let coins;
+
+            app.renderer.backGroundColor = 0x0E1516;
+            document.querySelector("div#canvas").appendChild(app.view);
+            setInterval(gameLoop, 1000/60);
+            
+            // CREATING THE CIRCLE CLASS
+            class Circle {
+                constructor(color,rad,sp){
+                    this.rad = rad;
+                    this.sp = so;
+
+                    let circle = new PIXI.Graphics();
+                    circle.beginFill(color);
+                    circle.drawCircle(0,0,rad);
+                    circle.endFill();
+                    circle.x = rad;
+                    circle.y = rad;
+                    app.stage.addChild(circle);
+
+                    this.cricle = circle;
+                }
+            }
+            // CREATING THE ENEMY CLASS and the function to add it
+            class EnemyBalls extends Circle {
+                update(){
+                    this.circle.x += this.sp.x;
+                    this.circle.y += this.sp.y;
+
+                    if(this.circle.x >= w-this.rad || this.circle.x <= this.rad){
+                        this.sp.x *= -1;
+                    }
+                    if(this.circle.y >= h-this.rad || this.circle.y <= this.rad){
+                        this.sp.y *= -1;
+                    }
+                }
+            }
+            function addEnemy() {
+                EnemyBalls.push(new EnemyBalls(0xe60000, Math.random()*10 + 10, {x:2 + Math.random(), y:2 + Math.random()}));
+            }
+            // CREATING THE PLAYER CLASS and controls
+            class Player extends Circle {
+                constructor (color, rad, sp) {
+                    super(color, rad, sp);
+                    this.reset();
+                }
+
+                reset(){
+                    this.circle.x = w/2;
+                    this.circle.y = h/2;
+                    this.vel = 2;
+                }
+
+                update(){
+                    let x = this.circle.x + this.sp.x;
+                    let y = this.circle.y + this.sp.y;
+
+                    this.circle.x = Math.min(Math.max(x,this.rad), w-this.rad);
+                    this.circle.y = Math.min(Math.max(y,this.rad), w-this.rad);
+                }
+            }
+
+            function onkeydown(ev){
+                switch (ev.key) {
+                    case "ArrowLeft"
+                }
+            }
+
+        </script>
+    </body>
+</html>
