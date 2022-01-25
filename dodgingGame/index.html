@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
         <title> Dodgy-Ball</title>
-        <link rel="stylesheet" type="text/css" href="styles.css">
+        <link rel="stylesheet" type="text/css" href="styles/styles.css">
     </head>
     <body>
     
@@ -12,9 +12,9 @@
             <h1 id="title"> Dodgy-Ballz</h1>
             <div id="titleScreen">
                 <div id="str" class="menu"> START GAME</div>
-                <div id="ct" class="menu"> CUSTOMIZE</div> 
+                <div id="df" class="menu"> DIFFICULTY &nbsp;<span id="switch">MEDIUM</span> &nbsp;-></div>
+                <div id="ct" class="menu"> CUSTOMIZE&nbsp;&nbsp;&nbsp;<span id="ball"> </span>&nbsp;&nbsp;-></div>
                 <div id="lb" class="menu"> LEADERBOARD</div>
-                <div id="ab" class="menu"> ABOUT</div> 
                 <div id="controls">WASD or Arrows to <b>move</b>. ESC to <b>quit</b>.<br><b>Avoid the red balls!</b></div>
             </div>
             <div id="gameScreen" class="hidden">
@@ -22,10 +22,9 @@
                 <div id="canvas"></div>
                 <div id="controls">WASD or Arrows to <b>move</b>, ESC to quit.<br><b>Avoid the red balls!</b></div>
             </div>
-            <div id='about'></div>
         </div>
         <!-- js-->
-        <script src='https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.4.5/pixi.min.js'></script>
-        <script src="dodgeBallz.js"></script>
+        <script src='https://pixijs.download/v6.2.1/pixi.js'></script>
+        <script src="src/dodgeBallz.js"></script>
     </body>
 </html>
