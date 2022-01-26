@@ -78,10 +78,14 @@ class Player extends Circle {
         
         monsters.forEach(m => {
             if (this.collide(m)) {
+                // playing sound
                 deathSnd.play();
                 deathSnd.currentTime = 0;
+                // saving player score
+                playerData.score = document.querySelector('#score span').innerHTML;
+                playerArray.push(playerData);
                 alert("You lose!")
-                reset();
+                endGame();
                 return;
             }
         });
@@ -227,7 +231,7 @@ function gameLoop() {
 }
 
 function startGame(){
-    console.log(difficulty);
+    playerData.username = window.prompt("Tell us your name!", "Player");
     if(difficulty == 1){
          w = 544, h=544;
          app = new PIXI.Application({width: w, height: h, antialias:true});
@@ -292,6 +296,26 @@ function customize(){
         el.style.backgroundColor = "#fcf8ec";
     }
 }
+// leaderboard functions
+function openLb (){
+    document.getElementById("titleScreen").style.display = "none";
+    document.getElementById("lbScreen").classList.remove("hidden");
+    let sortedPlayers = playerArray.sort((c1,c2) => (c1.score < c2.score) ?1 :
+    (c1.score > c2.score) ? -1 : 0);
+    console.log(sortedPlayers);
+    for(let i = 0; i < sortedPlayers.length; i++){
+        let ele = document.createElement("div");
+        document.getElementById("lbScreen").insertBefore(ele,document.getElementById("lbExit"))
+        ele.insertBefore()
+        ele.id = "user"+i+1;
+        ele.innerHTML= sortedPlayers[i].username+" ------------------------------- "+sortedPlayers[i].score;
+    }
+    document.getElementById("lbExit").addEventListener("click",function(){
+        document.getElementById("lbScreen").classList.add("hidden");
+        document.getElementById("titleScreen").style.display = "flex"
+        document.getElementById("titleScreen").style.alignSelf = "center";
+    })
+}
 
 // Event handlers and global variables
 var difficulty = 1;
@@ -302,9 +326,15 @@ var pressed = {};
 var player;
 var coin;
 var coins;
+const playerData = {
+    username:"",
+    score:""
+}
+var playerArray = [];
 document.getElementById('str').addEventListener("click",startGame);
 document.getElementById("df").addEventListener("click",changeDif);
 document.getElementById("ct").addEventListener("click",customize);
+document.getElementById("lb").addEventListener("click",openLb);
 //sound effects and music
-var coinSnd = new Audio("../assets/smw_coin.wav");
-var deathSnd = new Audio("../assets/wound.wav");
+var coinSnd = new Audio("assets/smw_coin.wav");
+var deathSnd = new Audio("assets/wound.wav");
