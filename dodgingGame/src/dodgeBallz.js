@@ -35,21 +35,17 @@ class Monster extends Circle {
         this.circle.y += this.v.y;
 
         if (this.circle.x >= w-this.radius) {
-            shake("right");
             this.v.x *= -1;
         }
 
         else if (this.circle.x <= this.radius) {
-            shake("left");
             this.v.x *= -1;
         }
 
         if (this.circle.y >= h-this.radius) {
-            shake("down");
             this.v.y *= -1;
         }
         else if (this.circle.y <= this.radius) {
-            shake("up");
             this.v.y *= -1;
         }
         
@@ -75,33 +71,37 @@ class Player extends Circle {
         this.circle.x = Math.min(Math.max(x, this.radius), w-this.radius);
         this.circle.y = Math.min(Math.max(y, this.radius), w-this.radius);
 
-        
+        // monster collition
         monsters.forEach(m => {
             if (this.collide(m)) {
                 // playing sound
                 deathSnd.play();
                 deathSnd.currentTime = 0;
-                // saving player score
-                playerData.score = document.querySelector('#score span').innerHTML;
-                playerArray.push(playerData);
+                // saving player data and updating the leaderboard
+                playerScore = document.querySelector('#score span').innerHTML;
+                scoreArray.push(playerScore);
+                updtLb();
+                // you lose message
                 alert("You lose!")
                 endGame();
                 return;
             }
         });
 
-        // // coin
+        // coin collition 
         if (this.collide(coin)) {
+            // coin sounds
             coinSnd.play();
             coinSnd.currentTime = 0;
+            // Updating coins, generating new random coin, adding monster and updating stats
             updateCoins(coins+1);
             coin.random();
             addMonster();
             if(this.speed < 15){
                 this.speed = this.speed + 0.2;
-                ClickEvent("coins");
-            }else{
-                ClickEvent("coins");
+            //     ClickEvent("coins");
+            // }else{
+            //     ClickEvent("coins");
             }            
             return;
         }
@@ -118,14 +118,6 @@ class Coin extends Circle {
          let s = 1 + Math.sin(new Date() * 0.01) * 0.2;
         this.circle.scale.set(s, s);
     }
-}
-
-
-function shake(className) {
-    return;
-
-   app.view.className = className;
-   setTimeout(()=>{app.view.className = ""}, 50);
 }
 
 function addMonster() {
@@ -231,7 +223,7 @@ function gameLoop() {
 }
 
 function startGame(){
-    playerData.username = window.prompt("Tell us your name!", "Player");
+    playerCont++;
     if(difficulty == 1){
          w = 544, h=544;
          app = new PIXI.Application({width: w, height: h, antialias:true});
@@ -243,8 +235,9 @@ function startGame(){
          document.getElementById("canvas").style.right = "10em";
          app = new PIXI.Application({width: w, height: h, antialias:true});
     }
-    document.getElementById("titleScreen").style.display = "none";
+    document.getElementById("loadingScreen").classList.add("hidden");
     document.getElementById("gameScreen").style.display = "initial";
+    playerName = window.prompt("Tell us your name!", "Player");
      player = new Player(color, 10, {x:0, y:0});
      coin = new Coin(0xF8F160, 10, {x:0, y:0});
     int = setInterval(gameLoop, 1000/60);
@@ -297,24 +290,38 @@ function customize(){
     }
 }
 // leaderboard functions
+function updtLb (){
+        if(playerCont == 1){
+            let ele = document.createElement("div");
+            document.getElementById("lbScreen").insertBefore(ele,document.getElementById("lbExit"));
+            ele.id = "user"+playerCont;
+            ele.innerHTML= playerName+" ------------------------------- "+playerScore;
+
+        }else{
+            pos = document.getElementById("lbExit");
+            for(let i = 0; i < playerCont; i++){
+                let num = i +1 ;
+               var rel = document.getElementById("user"+num);
+               var  relScore =  scoreArray[i];
+               if(playerScore > relScore){
+                    pos = rel;
+               }
+            }
+            let ele = document.createElement("div");
+            document.getElementById("lbScreen").insertBefore(ele,pos);
+            ele.id = "user"+playerCont;
+            ele.innerHTML= playerName+" ------------------------------- "+playerScore;
+        }
+    }
+
 function openLb (){
     document.getElementById("titleScreen").style.display = "none";
     document.getElementById("lbScreen").classList.remove("hidden");
-    let sortedPlayers = playerArray.sort((c1,c2) => (c1.score < c2.score) ?1 :
-    (c1.score > c2.score) ? -1 : 0);
-    console.log(sortedPlayers);
-    for(let i = 0; i < sortedPlayers.length; i++){
-        let ele = document.createElement("div");
-        document.getElementById("lbScreen").insertBefore(ele,document.getElementById("lbExit"))
-        ele.insertBefore()
-        ele.id = "user"+i+1;
-        ele.innerHTML= sortedPlayers[i].username+" ------------------------------- "+sortedPlayers[i].score;
-    }
     document.getElementById("lbExit").addEventListener("click",function(){
-        document.getElementById("lbScreen").classList.add("hidden");
-        document.getElementById("titleScreen").style.display = "flex"
-        document.getElementById("titleScreen").style.alignSelf = "center";
-    })
+            document.getElementById("lbScreen").classList.add("hidden");
+            document.getElementById("titleScreen").style.display = "flex"
+            document.getElementById("titleScreen").style.alignSelf = "center";
+        })
 }
 
 // Event handlers and global variables
@@ -326,15 +333,48 @@ var pressed = {};
 var player;
 var coin;
 var coins;
-const playerData = {
-    username:"",
-    score:""
-}
-var playerArray = [];
-document.getElementById('str').addEventListener("click",startGame);
+var playerName;
+var playerScore;
+var playerCont = 0;
+var pos;
+var scoreArray = [];
+document.getElementById('str').addEventListener("click",loading);
 document.getElementById("df").addEventListener("click",changeDif);
 document.getElementById("ct").addEventListener("click",customize);
 document.getElementById("lb").addEventListener("click",openLb);
 //sound effects and music
 var coinSnd = new Audio("assets/smw_coin.wav");
 var deathSnd = new Audio("assets/wound.wav");
+
+// loading screen promise function
+function loading(){			
+    document.getElementById("titleScreen").style.display = "none";
+    document.getElementById("loadingScreen").classList.remove("hidden");
+	let bar = document.querySelector(".loadBar");
+	let time = 2500;
+	let proc = 0;
+	var start = null;
+
+	return new Promise((resolve, reject) => {
+		function step(timestamp) {
+			if (!start) start = timestamp;
+			var prog = timestamp - start;
+			let pct = ((prog*100)/time) + "%";
+			bar.style.width = pct;
+				
+			if (prog < time) {
+				proc = window.requestAnimationFrame(step); 
+			} else {
+				bar.style.width = "100%";	
+				resolve(startGame());				
+			}
+		}
+		proc = window.requestAnimationFrame(step);
+	});	
+}
+
+// Game over promise function
+
+function gameOver(){
+    
+}

@@ -11,8 +11,9 @@ body {
     font-family: Verdana;
     font-size: 20px;
     text-align: center; 
-    background-image: url('../assets/bgTest.gif');
-    background-size: cover;
+    /* background-image: url('../assets/bgTest.gif'); */
+    /* background-size: cover; */
+    background-color: black;
     
   }
 
@@ -80,7 +81,7 @@ body {
   border-radius: 10px;
   cursor: pointer;
 }
-.menu:hover{
+.menu:hover,.butt:hover{
   background-color: rgb(104, 102, 102);
 }
 
@@ -106,6 +107,60 @@ body {
   color: black;
   position: relative;
   left: 27%;
+}
+#loadingScreen{
+  margin-top: 3em;
+  color: white;
+  font-family: "Crackman",Verdana;
+  letter-spacing: 5px;
+  font-size: 1.5em;
+}
+#bar{
+  margin-top: 0.5em;
+  height: 2em;
+  width: 100%;
+  border: 5px solid white;
+}
+
+.loadBar{
+  width: 0;
+  height: 100%;
+  background-color: #ffffff;
+}
+#gameOverScreen{
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  text-align: center;
+  top: 2em;
+  color: white;
+  font-size: 2em;
+  font-family: Verdana;
+}
+#gameOverScreen b{
+  font-family: "Crackman", Verdana;
+  font-size: 3em;
+}
+#timer{
+  font-family: "Crackman", Verdana;
+  font-size: 2.5em;
+}
+.butt{
+  margin-top: 1em ;
+  display: inline-block;
+  width: 5%;
+  background-color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  color: black;
+  font-size: 0.6em;
+}
+
+
+.blur{
+  opacity: 20%;
 }
 .hidden{
   display: none;
